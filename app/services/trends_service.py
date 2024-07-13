@@ -1,19 +1,21 @@
 from pytrends.request import TrendReq
 from app.utils.visualization import create_matplotlib_plot
 from ..services.cache_service import CacheService
+from datetime import datetime, timedelta
 
 
 class TrendsService:
-    @staticmethod
-    async def get_trend_data(keywords: str, timeframe: str):
-        # Wrapping the actual fetch function
-        def fetch_trend_data():
-            pytrends = TrendReq(hl='en-US', tz=360)
-            keyword_list = keywords.split(',')
-            pytrends.build_payload(keyword_list, timeframe=timeframe)
-            return pytrends.interest_over_time()
+    pytrends = TrendReq(hl='en-US', tz=360)
 
-        return CacheService.get_cached_data(f"trend_data:{keywords}:{timeframe}", fetch_trend_data)
+    @staticmethod
+    async def get_trend(keywords, timeframe=None):
+        if not timeframe:
+            end_date = datetime.today()
+            start_date = end_date - timedelta(days=2)
+            timeframe = f"{start_date.strftime('%Y-%m-%d')} {end_date.strftime('%Y-%m-%d')}"
+
+        TrendsService.pytrends.build_payload(keywords.split(','), cat=0, timeframe=timeframe, geo='', gprop='')
+        return TrendsService.pytrends.interest_over_time().to_dict(orient='records')
 
     @staticmethod
     async def get_trend(keywords: str, timeframe: str):

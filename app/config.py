@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-secret-key"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    API_KEY: str = "your-api-key"  # Ensure this matches the one used in the frontend
+    API_KEY: str = "my-very-secret-api-key"  # Set your API key here
 
     class Config:
         env_file = ".env"
