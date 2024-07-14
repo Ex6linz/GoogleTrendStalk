@@ -45,11 +45,19 @@ async def root():
 @app.get("/trend")
 async def get_trend(keywords: str, timeframe: str = None, api_key: str = Depends(get_api_key)):
     try:
-        # Log the parameters to verify they are received correctly
-        logging.info(f"Keywords: {keywords}, Timeframe: {timeframe}")
 
-        # Temporary response to verify the endpoint works
-        return {"keywords": keywords, "timeframe": timeframe}
+        logging.info(f"Keywords: {keywords}, Timeframe: {timeframe}")
+        trend_data = await TrendsService.get_trend(keywords, timeframe)
+
+        return trend_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/test-trend")
+async def get_trend(keywords: str, timeframe: str = None, api_key: str = Depends(get_api_key)):
+    try:
+        trend_data = await TrendsService.get_trend(keywords, timeframe)
+        return trend_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

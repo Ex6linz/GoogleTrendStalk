@@ -6,7 +6,7 @@ function App() {
   const [keywords, setKeywords] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [apiKey, setApiKey] = useState('my-very-secret-api-key'); // Domyślnie ustawiony API key
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
   const handleSubmit = async (event) => {
@@ -17,10 +17,12 @@ function App() {
     }
     console.log(`Sending request with keywords: ${keywords} and timeframe: ${timeframe}`);
 
+    setLoading(true);
+
     try {
       const response = await fetch(`http://127.0.0.1:8000/trend?keywords=${keywords}&timeframe=${timeframe}`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
         }
       });
       const data = await response.json();
@@ -28,6 +30,8 @@ function App() {
       setResult(data);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +65,7 @@ function App() {
         />
         <button type="submit" style={{ marginTop: '10px' }}>Search</button>
       </form>
+      {loading && <p>Loading...</p>}
       {result && (
         <div className="result">
           <pre>{JSON.stringify(result, null, 2)}</pre>
