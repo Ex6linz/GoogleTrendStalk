@@ -43,9 +43,13 @@ async def root():
 
 # Keep the trend endpoints in the main file for backwards compatibility
 @app.get("/trend")
-async def get_trend(request: TrendRequest, api_key: str = Depends(get_api_key)):
+async def get_trend(keywords: str, timeframe: str = None, api_key: str = Depends(get_api_key)):
     try:
-        return await TrendsService.get_trend(request.keywords, request.timeframe)
+        # Log the parameters to verify they are received correctly
+        logging.info(f"Keywords: {keywords}, Timeframe: {timeframe}")
+
+        # Temporary response to verify the endpoint works
+        return {"keywords": keywords, "timeframe": timeframe}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

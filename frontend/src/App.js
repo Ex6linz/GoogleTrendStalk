@@ -15,13 +15,20 @@ function App() {
     if (startDate && endDate) {
       timeframe = `${startDate} ${endDate}`;
     }
-    const response = await fetch(`http://127.0.0.1:8000/trend?keywords=${keywords}&timeframe=${timeframe}`, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`
-      }
-    });
-    const data = await response.json();
-    setResult(data);
+    console.log(`Sending request with keywords: ${keywords} and timeframe: ${timeframe}`);
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/trend?keywords=${keywords}&timeframe=${timeframe}`, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+      const data = await response.json();
+      console.log('Response received:', data);
+      setResult(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   return (
